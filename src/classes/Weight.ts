@@ -1,7 +1,4 @@
-enum WeightType {
-  kgs = 'kilograms',
-  lbs = 'pounds',
-}
+import { WeightType } from './ts_interfaces'
 
 const plate_images: { [key in WeightType]: { [key: number]: string } } = {
   kilograms: {
@@ -44,4 +41,4 @@ class Weight {
   }
 }
 
-export default Weight
+export { Weight, plate_images }
