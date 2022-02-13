@@ -1,0 +1,19 @@
+{
+  "name": "plate-math",
+  "version": "1.0.0",
+  "description": "All your gym plate math needs",
+  "main": "gymPlates.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TandyN/plate-math.git"
+  },
+  "author": "Tandy Nguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TandyN/plate-math/issues"
+  },
+  "homepage": "https://github.com/TandyN/plate-math#readme"
+}
