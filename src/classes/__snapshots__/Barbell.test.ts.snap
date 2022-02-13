@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Barbell Class add_kilogram_plate function should throw an error if number does not exist 1`] = `"plate number '11' does not exist for 'kilograms'"`;
+
+exports[`Barbell Class add_pound_plate function should throw an error if number does not exist 1`] = `"plate number '11' does not exist for 'pounds'"`;

@@ -24,21 +24,27 @@ const plate_images: { [key in WeightType]: { [key: number]: string } } = {
   },
 }
 
-class Weight {
+class Plate {
   weight: number
   weight_type: WeightType
-  weight_image: string
+  plate_image: string
 
   constructor(weight: number, weight_type: WeightType) {
     this.weight = weight
     this.weight_type = weight_type
 
-    if (!plate_images[weight_type][weight]) {
-      throw new Error('weight does not exist')
+    if (!plate_images[weight_type]) {
+      throw new Error(`plate type '${weight_type}' does not exist`)
     }
 
-    this.weight_image = plate_images[weight_type][weight]
+    if (!plate_images[weight_type][weight]) {
+      throw new Error(
+        `plate number '${weight}' does not exist for '${weight_type}'`,
+      )
+    }
+
+    this.plate_image = plate_images[weight_type][weight]
   }
 }
 
-export { Weight, plate_images }
+export { Plate, plate_images }

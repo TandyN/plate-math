@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Plate Class should throw an error if plate number does not exist 1`] = `"plate number '45' does not exist for 'kilograms'"`;
+
+exports[`Plate Class should throw an error if plate type does not exist 1`] = `"plate type 'pound' does not exist"`;
