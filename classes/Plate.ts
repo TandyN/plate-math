@@ -11,7 +11,6 @@ const plate_images: { [key in WeightType]: { [key: number]: string } } = {
     15: 'img',
     20: 'img',
     25: 'img',
-    50: 'img',
   },
   pounds: {
     1.25: 'img',
