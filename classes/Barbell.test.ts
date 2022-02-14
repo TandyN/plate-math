@@ -100,6 +100,9 @@ describe('Barbell Class', () => {
   describe('get_total_kilograms function', () => {
     it('should calculate all plates attached to barbell in kilograms', () => {
       const barbell = new Barbell()
+
+      expect(barbell.get_total_kilograms()).toBe(20)
+
       barbell.add_pound_plate(10)
       barbell.add_kilogram_plate(10)
       barbell.add_pound_plate(10)
@@ -118,6 +121,9 @@ describe('Barbell Class', () => {
   describe('get_total_pounds function', () => {
     it('should calculate all plates attached to barbell in pounds', () => {
       const barbell = new Barbell()
+
+      expect(barbell.get_total_pounds()).toBe(20 * 2.205)
+
       barbell.add_kilogram_plate(10)
       barbell.add_pound_plate(10)
       barbell.add_kilogram_plate(10)
@@ -130,6 +136,53 @@ describe('Barbell Class', () => {
       const expected = 25 * 2 * 2.205 + 20 * 2.205 + 40
 
       expect(actual).toBe(Math.round(expected * 100) / 100)
+    })
+  })
+
+  describe('fill_with_kilogram_plates function', () => {
+    it('should fill the attached_weights as close to specified weight as possible with kg plates', () => {
+      const barbell = new Barbell()
+
+      barbell.add_kilogram_plate(25)
+
+      const attached_weights = barbell.fill_with_kilogram_plates(170.6)
+
+      expect(attached_weights.length).toBe(3)
+      expect(attached_weights[0].weight).toBe(25)
+      expect(attached_weights[1].weight).toBe(25)
+      expect(attached_weights[2].weight).toBe(0.25)
+
+      expect(barbell.attached_weights.length).toBe(4)
+      expect(barbell.attached_weights[1].weight).toBe(25)
+      expect(barbell.attached_weights[2].weight).toBe(25)
+      expect(barbell.attached_weights[3].weight).toBe(0.25)
+
+      expect(barbell.get_total_kilograms()).toBe(170.5)
+    })
+  })
+
+  describe('fill_with_pound_plates function', () => {
+    it('should fill the attached_weights as close to specified weight as possible with lb plates', () => {
+      const barbell = new Barbell(45, WeightType.lbs)
+
+      barbell.add_pound_plate(45)
+
+      const attached_weights = barbell.fill_with_pound_plates(
+        318,
+        WeightType.lbs,
+      )
+
+      expect(attached_weights.length).toBe(3)
+      expect(attached_weights[0].weight).toBe(45)
+      expect(attached_weights[1].weight).toBe(45)
+      expect(attached_weights[2].weight).toBe(1.25)
+
+      expect(barbell.attached_weights.length).toBe(4)
+      expect(barbell.attached_weights[1].weight).toBe(45)
+      expect(barbell.attached_weights[2].weight).toBe(45)
+      expect(barbell.attached_weights[3].weight).toBe(1.25)
+
+      expect(barbell.get_total_pounds()).toBe(317.5)
     })
   })
 })
