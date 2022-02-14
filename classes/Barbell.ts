@@ -26,9 +26,15 @@ class Barbell {
     return added_pound_plate
   }
 
-  remove_plate() {
+  remove_last_plate() {
     const removed_plate: Plate | undefined = this.attached_weights.pop()
     return removed_plate
+  }
+
+  remove_all_plates() {
+    const current_attached_plates = this.attached_weights
+    this.attached_weights = []
+    return current_attached_plates
   }
 
   get_total_kilograms(): number {

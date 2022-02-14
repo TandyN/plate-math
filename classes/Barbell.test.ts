@@ -43,13 +43,15 @@ describe('Barbell Class', () => {
   describe('add_pound_plate function', () => {
     it('should add to attached_weights if weight number exists as a pound plate', () => {
       const barbell = new Barbell()
-      barbell.add_pound_plate(10)
 
+      const first_added_plate = barbell.add_pound_plate(10)
+      expect(first_added_plate.weight).toBe(10)
       expect(barbell.attached_weights.length).toBe(1)
       expect(barbell.attached_weights[0].weight).toBe(10)
       expect(barbell.attached_weights[0].weight_type).toBe('pounds')
 
-      barbell.add_pound_plate(25)
+      const second_added_plate = barbell.add_pound_plate(25)
+      expect(second_added_plate.weight).toBe(25)
       expect(barbell.attached_weights.length).toBe(2)
       expect(barbell.attached_weights[1].weight).toBe(25)
       expect(barbell.attached_weights[1].weight_type).toBe('pounds')
@@ -63,15 +65,34 @@ describe('Barbell Class', () => {
     })
   })
 
-  describe('remove_plate function', () => {
+  describe('remove_last_plate function', () => {
     it('should remove plate from attached_weights', () => {
       const barbell = new Barbell()
+
+      barbell.add_pound_plate(10)
+      barbell.add_pound_plate(5)
+      expect(barbell.attached_weights.length).toBe(2)
+
+      const first_removed_plate = barbell.remove_last_plate()
+      expect(first_removed_plate?.weight).toBe(5)
+      expect(barbell.attached_weights.length).toBe(1)
+
+      const second_removed_plate = barbell.remove_last_plate()
+      expect(second_removed_plate?.weight).toBe(10)
+      expect(barbell.attached_weights.length).toBe(0)
+    })
+  })
+
+  describe('remove_all_plates function', () => {
+    it('should remove all plates from attached_weights', () => {
+      const barbell = new Barbell()
+
       barbell.add_pound_plate(10)
       barbell.add_pound_plate(10)
       expect(barbell.attached_weights.length).toBe(2)
-      barbell.remove_plate()
-      expect(barbell.attached_weights.length).toBe(1)
-      barbell.remove_plate()
+
+      const removed_plates = barbell.remove_all_plates()
+      expect(removed_plates.length).toBe(2)
       expect(barbell.attached_weights.length).toBe(0)
     })
   })
