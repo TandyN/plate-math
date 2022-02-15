@@ -1,10 +1,13 @@
 import { Barbell } from './Barbell'
 import { WeightType } from './ts_interfaces'
 
+// kg to lbs multiplier
+const multiplier = 2.205
+
 describe('Barbell Class', () => {
   it('should convert all weight to kilograms if different weight type is specified', () => {
     const barbell = new Barbell(45, WeightType.lbs)
-    expect(barbell.weight).toBe(45 / 2.205)
+    expect(barbell.weight).toBe(45 / multiplier)
   })
 
   it('should assume barbell weight type is kilograms if weight type does not exist', () => {
@@ -97,32 +100,12 @@ describe('Barbell Class', () => {
     })
   })
 
-  describe('get_total_kilograms function', () => {
-    it('should calculate all plates attached to barbell in kilograms', () => {
+  describe('get_total_weight function', () => {
+    it("should calculate all plates attached to barbell in pounds if 'pounds' is passed as argument", () => {
       const barbell = new Barbell()
 
-      expect(barbell.get_total_kilograms()).toBe(20)
-
-      barbell.add_pound_plate(10)
-      barbell.add_kilogram_plate(10)
-      barbell.add_pound_plate(10)
-      barbell.add_kilogram_plate(10)
-      barbell.add_pound_plate(5)
-
-      const actual = Math.round(barbell.get_total_kilograms() * 100) / 100
-
-      // add lb plates, multiple by 2 for both sides of the barbell, convert to kgs, add barbell weight, then add kg plates at the end for both sides
-      const expected = (25 * 2) / 2.205 + 20 + 40
-
-      expect(actual).toBe(Math.round(expected * 100) / 100)
-    })
-  })
-
-  describe('get_total_pounds function', () => {
-    it('should calculate all plates attached to barbell in pounds', () => {
-      const barbell = new Barbell()
-
-      expect(barbell.get_total_pounds()).toBe(20 * 2.205)
+      // just the bar
+      expect(barbell.get_total_weight(WeightType.lbs)).toBe(20 * multiplier)
 
       barbell.add_kilogram_plate(10)
       barbell.add_pound_plate(10)
@@ -130,12 +113,42 @@ describe('Barbell Class', () => {
       barbell.add_pound_plate(10)
       barbell.add_kilogram_plate(5)
 
-      const actual = Math.round(barbell.get_total_pounds() * 100) / 100
+      const actual =
+        Math.round(barbell.get_total_weight(WeightType.lbs) * 100) / 100
 
       // add kg plates, multiple by 2 for both sides of the barbell, convert to lbs, add barbell weight, then add pound lb at the end for both sides
-      const expected = 25 * 2 * 2.205 + 20 * 2.205 + 40
+      const expected = 25 * 2 * multiplier + 20 * multiplier + 40
 
       expect(actual).toBe(Math.round(expected * 100) / 100)
+    })
+
+    it("should calculate all plates attached to barbell in kilograms if 'kilograms' is passed as argument", () => {
+      const barbell = new Barbell()
+
+      // just the bar
+      expect(barbell.get_total_weight(WeightType.kgs)).toBe(20)
+
+      barbell.add_pound_plate(10)
+      barbell.add_kilogram_plate(10)
+      barbell.add_pound_plate(10)
+      barbell.add_kilogram_plate(10)
+      barbell.add_pound_plate(5)
+
+      const actual =
+        Math.round(barbell.get_total_weight(WeightType.kgs) * 100) / 100
+
+      // add lb plates, multiple by 2 for both sides of the barbell, convert to kgs, add barbell weight, then add kg plates at the end for both sides
+      const expected = (25 * 2) / multiplier + 20 + 40
+
+      expect(actual).toBe(Math.round(expected * 100) / 100)
+    })
+
+    it("should assume weight type is kgs if 'pounds' is not the explicit weight type", () => {
+      // bar defaults to 20kg
+      const barbell = new Barbell()
+
+      expect(barbell.get_total_weight(WeightType.kgs)).toBe(20)
+      expect(barbell.get_total_weight('test' as never)).toBe(20)
     })
   })
 
@@ -157,7 +170,7 @@ describe('Barbell Class', () => {
       expect(barbell.attached_weights[2].weight).toBe(25)
       expect(barbell.attached_weights[3].weight).toBe(0.25)
 
-      expect(barbell.get_total_kilograms()).toBe(170.5)
+      expect(barbell.get_total_weight(WeightType.kgs)).toBe(170.5)
     })
   })
 
@@ -182,7 +195,7 @@ describe('Barbell Class', () => {
       expect(barbell.attached_weights[2].weight).toBe(45)
       expect(barbell.attached_weights[3].weight).toBe(1.25)
 
-      expect(barbell.get_total_pounds()).toBe(317.5)
+      expect(barbell.get_total_weight(WeightType.lbs)).toBe(317.5)
     })
   })
 })

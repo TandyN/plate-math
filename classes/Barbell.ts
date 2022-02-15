@@ -4,14 +4,16 @@ import { WeightType } from './ts_interfaces'
 class Barbell {
   weight: number // will always be in kilograms
   attached_weights: Array<Plate>
+  #multiplier: number
 
-  constructor(weight = 20, weight_type = WeightType.kgs) {
+  constructor(weight = 20, weight_type = WeightType.kgs, multiplier = 2.205) {
     if (weight_type === WeightType.lbs) {
-      this.weight = weight / 2.205
+      this.weight = weight / multiplier
     } else {
       this.weight = weight
     }
     this.attached_weights = []
+    this.#multiplier = multiplier
   }
 
   add_kilogram_plate(weight: number): Plate {
@@ -37,31 +39,30 @@ class Barbell {
     return current_attached_plates
   }
 
-  get_total_kilograms(): number {
-    return (
-      this.attached_weights.reduce((current_total, weight_node): number => {
-        let current_weight: number = weight_node.weight
-        if (weight_node.weight_type === WeightType.lbs) {
-          current_weight /= 2.205
-        }
-        return current_total + current_weight
-      }, 0) *
-        2 +
-      this.weight
-    )
-  }
+  get_total_weight(weight_type: WeightType = WeightType.kgs): number {
+    const bar_weight =
+      weight_type === WeightType.lbs
+        ? this.weight * this.#multiplier
+        : this.weight
 
-  get_total_pounds(): number {
     return (
       this.attached_weights.reduce((current_total, weight_node): number => {
         let current_weight: number = weight_node.weight
-        if (weight_node.weight_type === WeightType.kgs) {
-          current_weight *= 2.205
+        if (
+          weight_type === WeightType.lbs &&
+          weight_node.weight_type !== weight_type
+        ) {
+          current_weight *= this.#multiplier
+        } else if (
+          weight_type === WeightType.kgs &&
+          weight_node.weight_type !== weight_type
+        ) {
+          current_weight /= this.#multiplier
         }
         return current_total + current_weight
       }, 0) *
         2 +
-      this.weight * 2.205
+      bar_weight
     )
   }
 
@@ -72,7 +73,7 @@ class Barbell {
     let target_weight: number
 
     if (weight_type === WeightType.lbs) {
-      target_weight = weight / 2.205
+      target_weight = weight / this.#multiplier
     } else {
       target_weight = weight
     }
@@ -83,7 +84,7 @@ class Barbell {
       25, 20, 15, 10, 5, 2.5, 1.25, 0.5, 0.25,
     ]
 
-    let current_weight: number = this.get_total_kilograms()
+    let current_weight: number = this.get_total_weight(WeightType.kgs)
     let plate_index = 0
 
     while (plate_index < kilogram_plates.length) {
@@ -112,7 +113,7 @@ class Barbell {
     let target_weight: number
 
     if (weight_type === WeightType.kgs) {
-      target_weight = weight * 2.205
+      target_weight = weight * this.#multiplier
     } else {
       target_weight = weight
     }
@@ -121,7 +122,7 @@ class Barbell {
 
     const pound_plates: Array<number> = [45, 35, 25, 10, 5, 2.5, 1.25]
 
-    let current_weight: number = this.get_total_pounds()
+    let current_weight: number = this.get_total_weight(WeightType.lbs)
     let plate_index = 0
 
     while (plate_index < pound_plates.length) {
