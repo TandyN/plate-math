@@ -115,14 +115,12 @@ describe('Barbell Class', () => {
     it('should add to attached_weights if weight number exists as a pound plate', () => {
       const barbell = new Barbell()
 
-      const first_added_plate = barbell.add_pound_plate(10)
-      expect(first_added_plate.weight).toBe(10)
+      barbell.add_pound_plate(10)
       expect(barbell.get_attached_weights().length).toBe(1)
       expect(barbell.get_attached_weights()[0].weight).toBe(10)
       expect(barbell.get_attached_weights()[0].weight_type).toBe('pounds')
 
-      const second_added_plate = barbell.add_pound_plate(25)
-      expect(second_added_plate.weight).toBe(25)
+      barbell.add_pound_plate(25)
       expect(barbell.get_attached_weights().length).toBe(2)
       expect(barbell.get_attached_weights()[1].weight).toBe(25)
       expect(barbell.get_attached_weights()[1].weight_type).toBe('pounds')
@@ -152,6 +150,15 @@ describe('Barbell Class', () => {
       expect(second_removed_plate?.weight).toBe(10)
       expect(barbell.get_attached_weights().length).toBe(0)
     })
+
+    it('should return undefined if there are no plates to remove', () => {
+      const barbell = new Barbell()
+      expect(barbell.get_attached_weights().length).toBe(0)
+
+      const removed_plate = barbell.remove_last_plate()
+      expect(removed_plate).toBeUndefined()
+      expect(barbell.get_attached_weights().length).toBe(0)
+    })
   })
 
   describe('remove_all_plates function', () => {
@@ -162,8 +169,12 @@ describe('Barbell Class', () => {
       barbell.add_pound_plate(10)
       expect(barbell.get_attached_weights().length).toBe(2)
 
-      const removed_plates = barbell.remove_all_plates()
+      let removed_plates = barbell.remove_all_plates()
       expect(removed_plates.length).toBe(2)
+      expect(barbell.get_attached_weights().length).toBe(0)
+
+      removed_plates = barbell.remove_all_plates()
+      expect(removed_plates.length).toBe(0)
       expect(barbell.get_attached_weights().length).toBe(0)
     })
   })

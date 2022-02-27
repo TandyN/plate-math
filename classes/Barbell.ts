@@ -39,16 +39,14 @@ class Barbell {
     return this.#attached_weights
   }
 
-  add_kilogram_plate(weight: number): Plate {
+  add_kilogram_plate(weight: number): void {
     const added_kilogram_plate: Plate = new Plate(weight, WeightType.kgs)
     this.#attached_weights.push(added_kilogram_plate)
-    return added_kilogram_plate
   }
 
-  add_pound_plate(weight: number): Plate {
+  add_pound_plate(weight: number): void {
     const added_pound_plate: Plate = new Plate(weight, WeightType.lbs)
     this.#attached_weights.push(added_pound_plate)
-    return added_pound_plate
   }
 
   remove_last_plate() {
