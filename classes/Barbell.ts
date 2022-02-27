@@ -23,10 +23,7 @@ class Barbell {
     }
 
     if (!Object.values(WeightType).includes(weight_type)) {
-      console.warn(
-        `weight_type '${weight_type}' does not exist for barbell. assuming kilograms`,
-      )
-      weight_type = WeightType.kgs
+      throw new Error(`weight type '${weight_type}' does not exist for barbell`)
     }
 
     if (weight_type === WeightType.lbs) {
@@ -57,6 +54,12 @@ class Barbell {
   }
 
   get_total_weight(weight_type: WeightType): number {
+    if (!Object.values(WeightType).includes(weight_type)) {
+      throw new Error(
+        `weight type '${weight_type}' does not exist to get total weight`,
+      )
+    }
+
     const bar_weight =
       weight_type === WeightType.lbs
         ? this.#weight * this.#multiplier
@@ -88,6 +91,16 @@ class Barbell {
     target_weight_type: WeightType, // The weight type they specify
     target_plate_type: WeightType, // The plate type they want to put on
   ): Array<Plate> {
+    if (!Object.values(WeightType).includes(target_weight_type)) {
+      throw new Error(
+        `target weight type '${target_weight_type}' does not exist to fill weights`,
+      )
+    } else if (!Object.values(WeightType).includes(target_plate_type)) {
+      throw new Error(
+        `target plate type '${target_plate_type}' does not exist to fill weights`,
+      )
+    }
+
     let use_plate_type: Array<[number, number]>
     let current_weight: number
 

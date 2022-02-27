@@ -19,14 +19,10 @@ describe('Plate Class', () => {
     expect(typeof plate.get_image()).toBe('string')
   })
 
-  it('should log a warning and assume weight type of kilograms if weight type does not exist', () => {
-    const console_warn_spy = jest.spyOn(console, 'warn')
-
-    const plate = new Plate(15, 'fake weight type' as never)
-    expect(plate.get_weight()).toBe(15)
-    expect(plate.get_weight_type()).toBe('kilograms')
-
-    expect(console_warn_spy.mock.calls).toMatchSnapshot()
+  it('should throw error if weight type does not exist when intializing plate', () => {
+    expect(() => {
+      new Plate(15, 'fake weight type' as never)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   it('should throw an error if plate number does not exist for kilograms', () => {

@@ -34,14 +34,8 @@ class Plate {
     }
 
     if (!Object.values(WeightType).includes(weight_type)) {
-      console.warn(
-        `weight_type '${weight_type}' does not exist for plate. assuming kilograms`,
-      )
-      weight_type = WeightType.kgs
+      throw new Error(`weight type '${weight_type}' does not exist for plate`)
     }
-
-    this.#weight = weight
-    this.#weight_type = weight_type
 
     if (!plate_images[weight_type][weight]) {
       throw new Error(
@@ -49,6 +43,8 @@ class Plate {
       )
     }
 
+    this.#weight = weight
+    this.#weight_type = weight_type
     this.#image = plate_images[weight_type][weight]
   }
 

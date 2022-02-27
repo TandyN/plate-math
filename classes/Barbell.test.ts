@@ -32,19 +32,18 @@ describe('Barbell Class', () => {
       expect(barbell.get_weight()).toBe(59.2 / multiplier)
     })
 
-    it('should log a warning and assume barbell weight type is kilograms if weight type does not exist', () => {
-      const console_warn_spy = jest.spyOn(console, 'warn')
+    it('should throw error if weight type does not exist when intializing barbell weight', () => {
+      expect(() => {
+        new Barbell(33, 'fake weight type' as never)
+      }).toThrowErrorMatchingSnapshot()
 
-      let barbell = new Barbell(33, 'fake weight type' as never)
-      expect(barbell.get_weight()).toBe(33)
+      expect(() => {
+        new Barbell(0, 'fake weight type' as never)
+      }).toThrowErrorMatchingSnapshot()
 
-      barbell = new Barbell(0, 'fake weight type' as never)
-      expect(barbell.get_weight()).toBe(0)
-
-      barbell = new Barbell(59.2, 'fake weight type' as never)
-      expect(barbell.get_weight()).toBe(59.2)
-
-      expect(console_warn_spy.mock.calls).toMatchSnapshot()
+      expect(() => {
+        new Barbell(59.2, 'fake weight type' as never)
+      }).toThrowErrorMatchingSnapshot()
     })
 
     it('should default barbell weight to 20 kilograms if no arguments', () => {
@@ -68,16 +67,15 @@ describe('Barbell Class', () => {
       expect(barbell.get_weight()).toBe(31)
     })
 
-    it('should log a warning and set assume weight type of kilograms if specified weight type doesn not exist', () => {
-      const console_warn_spy = jest.spyOn(console, 'warn')
-
+    it('should throw error if weight type does not exist when setting barbell weight', () => {
       const barbell = new Barbell(21)
       expect(barbell.get_weight()).toBe(21)
 
-      barbell.set_weight(31, 'fake weight type' as never)
-      expect(barbell.get_weight()).toBe(31)
+      expect(() => {
+        barbell.set_weight(31, 'fake weight type' as never)
+      }).toThrowErrorMatchingSnapshot()
 
-      expect(console_warn_spy.mock.calls).toMatchSnapshot()
+      expect(barbell.get_weight()).toBe(21)
     })
 
     it('should throw an error if user tries to make the barbell weight negative by initalizing or setting', () => {
@@ -196,10 +194,12 @@ describe('Barbell Class', () => {
       barbell.add_plate(5, WeightType.kgs)
 
       const actual =
-        Math.round(barbell.get_total_weight(WeightType.lbs) * 100) / 100
+        Math.round(barbell.get_total_weight(WeightType.lbs) * 100) / 100 // round 2 decimals
 
-      // add kg plates, multiple by 2 for both sides of the barbell, convert to lbs, add barbell weight, then add pound lb at the end for both sides
-      const expected = 25 * 2 * multiplier + 20 * multiplier + 40
+      const barbell_weight = 20 * multiplier
+      const lb_plates_weight = 20 * 2 // x2 for both sides
+      const kg_plates_weight = 25 * 2 * multiplier
+      const expected = barbell_weight + lb_plates_weight + kg_plates_weight
 
       expect(actual).toBe(Math.round(expected * 100) / 100)
     })
@@ -217,20 +217,23 @@ describe('Barbell Class', () => {
       barbell.add_plate(5, WeightType.lbs)
 
       const actual =
-        Math.round(barbell.get_total_weight(WeightType.kgs) * 100) / 100
+        Math.round(barbell.get_total_weight(WeightType.kgs) * 100) / 100 // round 2 decimals
 
-      // add lb plates, multiple by 2 for both sides of the barbell, convert to kgs, add barbell weight, then add kg plates at the end for both sides
-      const expected = (25 * 2) / multiplier + 20 + 40
+      const barbell_weight = 20
+      const lb_plates_weight = (25 * 2) / multiplier // x2 for both sides
+      const kg_plates_weight = 20 * 2
+      const expected = barbell_weight + lb_plates_weight + kg_plates_weight
 
       expect(actual).toBe(Math.round(expected * 100) / 100)
     })
 
-    it("should assume weight type is kgs if 'pounds' is not the explicit weight type", () => {
+    it('should throw error if invalid weight type', () => {
       // bar defaults to 20kg
       const barbell = new Barbell()
 
-      expect(barbell.get_total_weight(WeightType.kgs)).toBe(20)
-      expect(barbell.get_total_weight('test' as never)).toBe(20)
+      expect(() => {
+        barbell.get_total_weight('test' as never)
+      }).toThrowErrorMatchingSnapshot()
     })
   })
 
@@ -329,6 +332,25 @@ describe('Barbell Class', () => {
       expect(barbell.get_attached_plates()[3].get_weight()).toBe(1.25)
 
       expect(barbell.get_total_weight(WeightType.lbs)).toBe(317.5)
+    })
+
+    it('should throw error if weight type does not exist for either target weight type or target plate type', () => {
+      const barbell = new Barbell(20, WeightType.kgs)
+
+      barbell.add_plate(45, WeightType.lbs)
+      barbell.add_plate(20, WeightType.kgs)
+
+      expect(() => {
+        barbell.fill_to_target(144.2, 'tons' as never, WeightType.lbs)
+      }).toThrowErrorMatchingSnapshot()
+
+      expect(() => {
+        barbell.fill_to_target(144.2, WeightType.kgs, 'tons' as never)
+      }).toThrowErrorMatchingSnapshot()
+
+      expect(() => {
+        barbell.fill_to_target(144.2, 'grams' as never, 'tons' as never)
+      }).toThrowErrorMatchingSnapshot()
     })
   })
 })
