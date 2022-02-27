@@ -52,10 +52,19 @@ describe('Barbell Class', () => {
       expect(barbell.get_weight()).toBe(20)
     })
 
+    it('should set barbell weight to specified weight', () => {
+      const barbell = new Barbell()
+      barbell.set_weight(25, WeightType.kgs)
+      expect(barbell.get_weight()).toBe(25)
+
+      barbell.set_weight(45, WeightType.lbs)
+      expect(barbell.get_weight()).toBe(45 / multiplier)
+    })
+
     it('should set assume weight type of kilograms if no weight type specified', () => {
       const barbell = new Barbell(21)
       expect(barbell.get_weight()).toBe(21)
-      barbell.set_weight(31)
+      barbell.set_weight(31, WeightType.kgs)
       expect(barbell.get_weight()).toBe(31)
     })
 
@@ -83,7 +92,7 @@ describe('Barbell Class', () => {
       const barbell = new Barbell()
 
       expect(() => {
-        barbell.set_weight(-50)
+        barbell.set_weight(-50, WeightType.kgs)
       }).toThrowErrorMatchingSnapshot()
     })
   })

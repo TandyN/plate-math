@@ -17,7 +17,7 @@ class Barbell {
     return this.#weight
   }
 
-  set_weight(weight: number, weight_type: WeightType = WeightType.kgs): void {
+  set_weight(weight: number, weight_type: WeightType): void {
     if (weight < 0) {
       throw new Error('barbell weight can not be negative')
     }
@@ -26,6 +26,7 @@ class Barbell {
       console.warn(
         `weight_type '${weight_type}' does not exist for barbell. assuming kilograms`,
       )
+      weight_type = WeightType.kgs
     }
 
     if (weight_type === WeightType.lbs) {
@@ -39,23 +40,23 @@ class Barbell {
     return this.#attached_plates
   }
 
-  add_plate(weight: number, weight_type: WeightType = WeightType.kgs): void {
+  add_plate(weight: number, weight_type: WeightType): void {
     const added_plate: Plate = new Plate(weight, weight_type)
     this.#attached_plates.push(added_plate)
   }
 
-  remove_last_plate() {
+  remove_last_plate(): Plate | undefined {
     const removed_plate: Plate | undefined = this.#attached_plates.pop()
     return removed_plate
   }
 
-  remove_all_plates() {
+  remove_all_plates(): Array<Plate> {
     const current_attached_plates: Array<Plate> = this.#attached_plates
     this.#attached_plates = []
     return current_attached_plates
   }
 
-  get_total_weight(weight_type: WeightType = WeightType.kgs): number {
+  get_total_weight(weight_type: WeightType): number {
     const bar_weight =
       weight_type === WeightType.lbs
         ? this.#weight * this.#multiplier
@@ -84,8 +85,8 @@ class Barbell {
 
   fill_to_target(
     target_weight: number, // What they want the weight to be
-    target_weight_type: WeightType = WeightType.kgs, // The weight type they specify
-    target_plate_type: WeightType = WeightType.kgs, // The plate type they want to put on
+    target_weight_type: WeightType, // The weight type they specify
+    target_plate_type: WeightType, // The plate type they want to put on
   ): Array<Plate> {
     let use_plate_type: Array<[number, number]>
     let current_weight: number
