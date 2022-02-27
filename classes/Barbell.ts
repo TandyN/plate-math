@@ -2,18 +2,37 @@ import { Plate } from './Plate'
 import { WeightType } from './ts_interfaces'
 
 class Barbell {
-  weight: number // will always be in kilograms
-  attached_weights: Array<Plate>
+  #weight: number // will always be in kilograms
   #multiplier: number
+  attached_weights: Array<Plate>
 
-  constructor(weight = 20, weight_type = WeightType.kgs, multiplier = 2.205) {
-    if (weight_type === WeightType.lbs) {
-      this.weight = weight / multiplier
-    } else {
-      this.weight = weight
-    }
+  constructor(weight = 20, weight_type = WeightType.kgs) {
+    this.#multiplier = 2.205 // kg --> lbs
     this.attached_weights = []
-    this.#multiplier = multiplier
+    this.#weight = weight
+    this.set_weight(weight, weight_type)
+  }
+
+  set_weight(weight: number, weight_type = WeightType.kgs): void {
+    if (weight < 0) {
+      throw new Error('barbell weight can not be negative')
+    }
+
+    let input_weight = weight
+
+    if (weight_type === WeightType.lbs) {
+      input_weight /= this.#multiplier
+    } else if (weight_type !== WeightType.kgs) {
+      console.warn(
+        `weight_type '${weight_type}' does not exist. assuming kilograms`,
+      )
+    }
+
+    this.#weight = input_weight
+  }
+
+  get_weight(): number {
+    return this.#weight
   }
 
   add_kilogram_plate(weight: number): Plate {
@@ -42,8 +61,8 @@ class Barbell {
   get_total_weight(weight_type: WeightType = WeightType.kgs): number {
     const bar_weight =
       weight_type === WeightType.lbs
-        ? this.weight * this.#multiplier
-        : this.weight
+        ? this.#weight * this.#multiplier
+        : this.#weight
 
     return (
       this.attached_weights.reduce((current_total, weight_node): number => {

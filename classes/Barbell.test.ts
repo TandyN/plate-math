@@ -4,20 +4,88 @@ import { WeightType } from './ts_interfaces'
 // kg to lbs multiplier
 const multiplier = 2.205
 
+afterEach(() => {
+  jest.clearAllMocks()
+})
+
 describe('Barbell Class', () => {
-  it('should convert all weight to kilograms if different weight type is specified', () => {
-    const barbell = new Barbell(45, WeightType.lbs)
-    expect(barbell.weight).toBe(45 / multiplier)
-  })
+  describe('Getting/Setting Weight', () => {
+    it('should output weight to kilograms if kilograms is specified', () => {
+      let barbell = new Barbell(45, WeightType.kgs)
+      expect(barbell.get_weight()).toBe(45)
 
-  it('should assume barbell weight type is kilograms if weight type does not exist', () => {
-    const barbell = new Barbell(33, 'fake weight type' as never)
-    expect(barbell.weight).toBe(33)
-  })
+      barbell = new Barbell(0, WeightType.kgs)
+      expect(barbell.get_weight()).toBe(0)
 
-  it('should default barbell weight to 20', () => {
-    const barbell = new Barbell()
-    expect(barbell.weight).toBe(20)
+      barbell = new Barbell(59.2, WeightType.kgs)
+      expect(barbell.get_weight()).toBe(59.2)
+    })
+
+    it('should convert barbell weight to kilograms if weight type pounds is specified', () => {
+      let barbell = new Barbell(45, WeightType.lbs)
+      expect(barbell.get_weight()).toBe(45 / multiplier)
+
+      barbell = new Barbell(0, WeightType.lbs)
+      expect(barbell.get_weight()).toBe(0)
+
+      barbell = new Barbell(59.2, WeightType.lbs)
+      expect(barbell.get_weight()).toBe(59.2 / multiplier)
+    })
+
+    it('should log a warning and assume barbell weight type is kilograms if weight type does not exist', () => {
+      const console_warn_spy = jest.spyOn(console, 'warn')
+
+      let barbell = new Barbell(33, 'fake weight type' as never)
+      expect(barbell.get_weight()).toBe(33)
+
+      barbell = new Barbell(0, 'fake weight type' as never)
+      expect(barbell.get_weight()).toBe(0)
+
+      barbell = new Barbell(59.2, 'fake weight type' as never)
+      expect(barbell.get_weight()).toBe(59.2)
+
+      expect(console_warn_spy.mock.calls).toMatchSnapshot()
+    })
+
+    it('should default barbell weight to 20 kilograms if no arguments', () => {
+      const barbell = new Barbell()
+      expect(barbell.get_weight()).toBe(20)
+    })
+
+    it('should set assume weight type of kilograms if no weight type specified', () => {
+      const barbell = new Barbell(21)
+      expect(barbell.get_weight()).toBe(21)
+      barbell.set_weight(31)
+      expect(barbell.get_weight()).toBe(31)
+    })
+
+    it('should log a warning and set assume weight type of kilograms if specified weight type doesn not exist', () => {
+      const console_warn_spy = jest.spyOn(console, 'warn')
+
+      const barbell = new Barbell(21)
+      expect(barbell.get_weight()).toBe(21)
+
+      barbell.set_weight(31, 'fake weight type' as never)
+      expect(barbell.get_weight()).toBe(31)
+
+      expect(console_warn_spy.mock.calls).toMatchSnapshot()
+    })
+
+    it('should throw an error if user tries to make the barbell weight negative by initalizing or setting', () => {
+      expect(() => {
+        new Barbell(-20)
+      }).toThrowErrorMatchingSnapshot()
+
+      expect(() => {
+        new Barbell(-20, WeightType.lbs)
+      }).toThrowErrorMatchingSnapshot()
+
+      const barbell = new Barbell()
+
+      expect(() => {
+        barbell.set_weight(-50)
+      }).toThrowErrorMatchingSnapshot()
+    })
   })
 
   describe('add_kilogram_plate function', () => {
