@@ -334,6 +334,23 @@ describe('Barbell Class', () => {
       expect(barbell.get_total_weight(WeightType.lbs)).toBe(317.5)
     })
 
+    it('should should not attach any plates if target weight is less than weight on the bar', () => {
+      const barbell = new Barbell(45, WeightType.lbs)
+
+      barbell.add_plate(45, WeightType.lbs)
+
+      const attached_plates = barbell.fill_to_target(
+        130,
+        WeightType.lbs,
+        WeightType.lbs,
+      )
+
+      expect(attached_plates.length).toBe(0)
+      expect(barbell.get_attached_plates().length).toBe(1)
+      expect(barbell.get_attached_plates()[0].get_weight()).toBe(45)
+      expect(barbell.get_attached_plates()[0].get_weight_type()).toBe('pounds')
+    })
+
     it('should throw error if weight type does not exist for either target weight type or target plate type', () => {
       const barbell = new Barbell(20, WeightType.kgs)
 
