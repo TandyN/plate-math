@@ -93,14 +93,14 @@ describe('Barbell Class', () => {
       const barbell = new Barbell()
       barbell.add_kilogram_plate(10)
 
-      expect(barbell.attached_weights.length).toBe(1)
-      expect(barbell.attached_weights[0].weight).toBe(10)
-      expect(barbell.attached_weights[0].weight_type).toBe('kilograms')
+      expect(barbell.get_attached_weights().length).toBe(1)
+      expect(barbell.get_attached_weights()[0].weight).toBe(10)
+      expect(barbell.get_attached_weights()[0].weight_type).toBe('kilograms')
 
       barbell.add_kilogram_plate(15)
-      expect(barbell.attached_weights.length).toBe(2)
-      expect(barbell.attached_weights[1].weight).toBe(15)
-      expect(barbell.attached_weights[1].weight_type).toBe('kilograms')
+      expect(barbell.get_attached_weights().length).toBe(2)
+      expect(barbell.get_attached_weights()[1].weight).toBe(15)
+      expect(barbell.get_attached_weights()[1].weight_type).toBe('kilograms')
     })
 
     it('should throw an error if number does not exist', () => {
@@ -117,15 +117,15 @@ describe('Barbell Class', () => {
 
       const first_added_plate = barbell.add_pound_plate(10)
       expect(first_added_plate.weight).toBe(10)
-      expect(barbell.attached_weights.length).toBe(1)
-      expect(barbell.attached_weights[0].weight).toBe(10)
-      expect(barbell.attached_weights[0].weight_type).toBe('pounds')
+      expect(barbell.get_attached_weights().length).toBe(1)
+      expect(barbell.get_attached_weights()[0].weight).toBe(10)
+      expect(barbell.get_attached_weights()[0].weight_type).toBe('pounds')
 
       const second_added_plate = barbell.add_pound_plate(25)
       expect(second_added_plate.weight).toBe(25)
-      expect(barbell.attached_weights.length).toBe(2)
-      expect(barbell.attached_weights[1].weight).toBe(25)
-      expect(barbell.attached_weights[1].weight_type).toBe('pounds')
+      expect(barbell.get_attached_weights().length).toBe(2)
+      expect(barbell.get_attached_weights()[1].weight).toBe(25)
+      expect(barbell.get_attached_weights()[1].weight_type).toBe('pounds')
     })
 
     it('should throw an error if number does not exist', () => {
@@ -142,15 +142,15 @@ describe('Barbell Class', () => {
 
       barbell.add_pound_plate(10)
       barbell.add_pound_plate(5)
-      expect(barbell.attached_weights.length).toBe(2)
+      expect(barbell.get_attached_weights().length).toBe(2)
 
       const first_removed_plate = barbell.remove_last_plate()
       expect(first_removed_plate?.weight).toBe(5)
-      expect(barbell.attached_weights.length).toBe(1)
+      expect(barbell.get_attached_weights().length).toBe(1)
 
       const second_removed_plate = barbell.remove_last_plate()
       expect(second_removed_plate?.weight).toBe(10)
-      expect(barbell.attached_weights.length).toBe(0)
+      expect(barbell.get_attached_weights().length).toBe(0)
     })
   })
 
@@ -160,11 +160,11 @@ describe('Barbell Class', () => {
 
       barbell.add_pound_plate(10)
       barbell.add_pound_plate(10)
-      expect(barbell.attached_weights.length).toBe(2)
+      expect(barbell.get_attached_weights().length).toBe(2)
 
       const removed_plates = barbell.remove_all_plates()
       expect(removed_plates.length).toBe(2)
-      expect(barbell.attached_weights.length).toBe(0)
+      expect(barbell.get_attached_weights().length).toBe(0)
     })
   })
 
@@ -237,10 +237,10 @@ describe('Barbell Class', () => {
       expect(attached_weights[1].weight).toBe(45)
       expect(attached_weights[2].weight).toBe(1.25)
 
-      expect(barbell.attached_weights.length).toBe(4)
-      expect(barbell.attached_weights[1].weight).toBe(45)
-      expect(barbell.attached_weights[2].weight).toBe(45)
-      expect(barbell.attached_weights[3].weight).toBe(1.25)
+      expect(barbell.get_attached_weights().length).toBe(4)
+      expect(barbell.get_attached_weights()[1].weight).toBe(45)
+      expect(barbell.get_attached_weights()[2].weight).toBe(45)
+      expect(barbell.get_attached_weights()[3].weight).toBe(1.25)
 
       expect(barbell.get_total_weight(WeightType.lbs)).toBe(317.5)
     })
@@ -261,10 +261,10 @@ describe('Barbell Class', () => {
       expect(attached_weights[1].weight).toBe(25)
       expect(attached_weights[2].weight).toBe(0.25)
 
-      expect(barbell.attached_weights.length).toBe(4)
-      expect(barbell.attached_weights[1].weight).toBe(25)
-      expect(barbell.attached_weights[2].weight).toBe(25)
-      expect(barbell.attached_weights[3].weight).toBe(0.25)
+      expect(barbell.get_attached_weights().length).toBe(4)
+      expect(barbell.get_attached_weights()[1].weight).toBe(25)
+      expect(barbell.get_attached_weights()[2].weight).toBe(25)
+      expect(barbell.get_attached_weights()[3].weight).toBe(0.25)
 
       expect(barbell.get_total_weight(WeightType.kgs)).toBe(170.5)
     })
@@ -285,10 +285,10 @@ describe('Barbell Class', () => {
       expect(attached_weights[1].weight).toBe(25)
       expect(attached_weights[2].weight).toBe(0.25)
 
-      expect(barbell.attached_weights.length).toBe(4)
-      expect(barbell.attached_weights[1].weight).toBe(25)
-      expect(barbell.attached_weights[2].weight).toBe(25)
-      expect(barbell.attached_weights[3].weight).toBe(0.25)
+      expect(barbell.get_attached_weights().length).toBe(4)
+      expect(barbell.get_attached_weights()[1].weight).toBe(25)
+      expect(barbell.get_attached_weights()[2].weight).toBe(25)
+      expect(barbell.get_attached_weights()[3].weight).toBe(0.25)
 
       expect(barbell.get_total_weight(WeightType.kgs)).toBe(170.5)
     })
@@ -309,10 +309,10 @@ describe('Barbell Class', () => {
       expect(attached_weights[1].weight).toBe(45)
       expect(attached_weights[2].weight).toBe(1.25)
 
-      expect(barbell.attached_weights.length).toBe(4)
-      expect(barbell.attached_weights[1].weight).toBe(45)
-      expect(barbell.attached_weights[2].weight).toBe(45)
-      expect(barbell.attached_weights[3].weight).toBe(1.25)
+      expect(barbell.get_attached_weights().length).toBe(4)
+      expect(barbell.get_attached_weights()[1].weight).toBe(45)
+      expect(barbell.get_attached_weights()[2].weight).toBe(45)
+      expect(barbell.get_attached_weights()[3].weight).toBe(1.25)
 
       expect(barbell.get_total_weight(WeightType.lbs)).toBe(317.5)
     })

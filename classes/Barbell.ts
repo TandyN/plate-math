@@ -2,15 +2,19 @@ import { Plate } from './Plate'
 import { WeightType } from './ts_interfaces'
 
 class Barbell {
-  #weight: number // will always be in kilograms
   #multiplier: number
-  attached_weights: Array<Plate>
+  #weight: number // will always be in kilograms
+  #attached_weights: Array<Plate>
 
   constructor(weight = 20, weight_type = WeightType.kgs) {
     this.#multiplier = 2.205 // kg --> lbs
-    this.attached_weights = []
     this.#weight = weight
     this.set_weight(weight, weight_type)
+    this.#attached_weights = []
+  }
+
+  get_weight(): number {
+    return this.#weight
   }
 
   set_weight(weight: number, weight_type = WeightType.kgs): void {
@@ -31,30 +35,30 @@ class Barbell {
     this.#weight = input_weight
   }
 
-  get_weight(): number {
-    return this.#weight
+  get_attached_weights(): Array<Plate> {
+    return this.#attached_weights
   }
 
   add_kilogram_plate(weight: number): Plate {
     const added_kilogram_plate: Plate = new Plate(weight, WeightType.kgs)
-    this.attached_weights.push(added_kilogram_plate)
+    this.#attached_weights.push(added_kilogram_plate)
     return added_kilogram_plate
   }
 
   add_pound_plate(weight: number): Plate {
     const added_pound_plate: Plate = new Plate(weight, WeightType.lbs)
-    this.attached_weights.push(added_pound_plate)
+    this.#attached_weights.push(added_pound_plate)
     return added_pound_plate
   }
 
   remove_last_plate() {
-    const removed_plate: Plate | undefined = this.attached_weights.pop()
+    const removed_plate: Plate | undefined = this.#attached_weights.pop()
     return removed_plate
   }
 
   remove_all_plates() {
-    const current_attached_plates: Array<Plate> = this.attached_weights
-    this.attached_weights = []
+    const current_attached_plates: Array<Plate> = this.#attached_weights
+    this.#attached_weights = []
     return current_attached_plates
   }
 
@@ -65,7 +69,7 @@ class Barbell {
         : this.#weight
 
     return (
-      this.attached_weights.reduce((current_total, weight_node): number => {
+      this.#attached_weights.reduce((current_total, weight_node): number => {
         let current_weight: number = weight_node.weight
         if (
           weight_type === WeightType.lbs &&
@@ -146,7 +150,7 @@ class Barbell {
         target_attached_weights.push(
           new Plate(use_plate_type[plate_index][0], target_plate_type),
         )
-        this.attached_weights.push(
+        this.#attached_weights.push(
           new Plate(use_plate_type[plate_index][0], target_plate_type),
         )
       } else {
