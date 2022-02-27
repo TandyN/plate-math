@@ -9,22 +9,22 @@ describe('Plate Class', () => {
   it('should insert the correct weight & weight type', () => {
     let plate = new Plate(45, WeightType.lbs)
 
-    expect(plate.weight).toBe(45)
-    expect(plate.weight_type).toBe('pounds')
-    expect(typeof plate.image).toBe('string')
+    expect(plate.get_weight()).toBe(45)
+    expect(plate.get_weight_type()).toBe('pounds')
+    expect(typeof plate.get_image()).toBe('string')
 
     plate = new Plate(10, WeightType.kgs)
-    expect(plate.weight).toBe(10)
-    expect(plate.weight_type).toBe('kilograms')
-    expect(typeof plate.image).toBe('string')
+    expect(plate.get_weight()).toBe(10)
+    expect(plate.get_weight_type()).toBe('kilograms')
+    expect(typeof plate.get_image()).toBe('string')
   })
 
   it('should log a warning and assume weight type of kilograms if weight type does not exist', () => {
     const console_warn_spy = jest.spyOn(console, 'warn')
 
     const plate = new Plate(15, 'fake weight type' as never)
-    expect(plate.weight).toBe(15)
-    expect(plate.weight_type).toBe('kilograms')
+    expect(plate.get_weight()).toBe(15)
+    expect(plate.get_weight_type()).toBe('kilograms')
 
     expect(console_warn_spy.mock.calls).toMatchSnapshot()
   })

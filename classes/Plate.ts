@@ -24,9 +24,9 @@ const plate_images: { [key in WeightType]: { [key: number]: string } } = {
 }
 
 class Plate {
-  weight: number
-  weight_type: WeightType
-  image: string
+  #weight: number
+  #weight_type: WeightType
+  #image: string
 
   constructor(weight: number, weight_type: WeightType) {
     if (weight < 0) {
@@ -40,8 +40,8 @@ class Plate {
       weight_type = WeightType.kgs
     }
 
-    this.weight = weight
-    this.weight_type = weight_type
+    this.#weight = weight
+    this.#weight_type = weight_type
 
     if (!plate_images[weight_type][weight]) {
       throw new Error(
@@ -49,7 +49,19 @@ class Plate {
       )
     }
 
-    this.image = plate_images[weight_type][weight]
+    this.#image = plate_images[weight_type][weight]
+  }
+
+  get_weight(): number {
+    return this.#weight
+  }
+
+  get_weight_type(): WeightType {
+    return this.#weight_type
+  }
+
+  get_image(): string {
+    return this.#image
   }
 }
 

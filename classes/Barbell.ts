@@ -62,16 +62,16 @@ class Barbell {
         : this.#weight
 
     return (
-      this.#attached_plates.reduce((current_total, weight_node): number => {
-        let current_weight: number = weight_node.weight
+      this.#attached_plates.reduce((current_total, plate: Plate): number => {
+        let current_weight: number = plate.get_weight()
         if (
           weight_type === WeightType.lbs &&
-          weight_node.weight_type !== weight_type
+          plate.get_weight_type() !== weight_type
         ) {
           current_weight *= this.#multiplier
         } else if (
           weight_type === WeightType.kgs &&
-          weight_node.weight_type !== weight_type
+          plate.get_weight_type() !== weight_type
         ) {
           current_weight /= this.#multiplier
         }
