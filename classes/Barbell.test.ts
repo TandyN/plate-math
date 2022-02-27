@@ -104,13 +104,6 @@ describe('Barbell Class', () => {
         expect(barbell.get_attached_plates()[1].weight_type).toBe('kilograms')
       })
 
-      it('should throw an error if number does not exist for kilogram plates', () => {
-        const barbell = new Barbell()
-        expect(() => {
-          barbell.add_plate(11, WeightType.kgs)
-        }).toThrowErrorMatchingSnapshot()
-      })
-
       it('should add to attached_plates if weight number exists as a pound plate', () => {
         const barbell = new Barbell()
 
@@ -123,25 +116,6 @@ describe('Barbell Class', () => {
         expect(barbell.get_attached_plates().length).toBe(2)
         expect(barbell.get_attached_plates()[1].weight).toBe(25)
         expect(barbell.get_attached_plates()[1].weight_type).toBe('pounds')
-      })
-
-      it('should throw an error if number does not exist for pound plates', () => {
-        const barbell = new Barbell()
-        expect(() => {
-          barbell.add_plate(11, WeightType.lbs)
-        }).toThrowErrorMatchingSnapshot()
-      })
-
-      it('should log a warning and assume weight type of kilograms if weight type does not exist', () => {
-        const console_warn_spy = jest.spyOn(console, 'warn')
-
-        const barbell = new Barbell()
-        barbell.add_plate(15, 'fake weight type' as never)
-        expect(barbell.get_attached_plates().length).toBe(1)
-        expect(barbell.get_attached_plates()[0].weight).toBe(15)
-        expect(barbell.get_attached_plates()[0].weight_type).toBe('kilograms')
-
-        expect(console_warn_spy.mock.calls).toMatchSnapshot()
       })
     })
 

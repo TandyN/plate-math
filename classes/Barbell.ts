@@ -22,17 +22,17 @@ class Barbell {
       throw new Error('barbell weight can not be negative')
     }
 
-    let input_weight = weight
-
-    if (weight_type === WeightType.lbs) {
-      input_weight /= this.#multiplier
-    } else if (weight_type !== WeightType.kgs) {
+    if (!Object.values(WeightType).includes(weight_type)) {
       console.warn(
-        `weight_type '${weight_type}' does not exist for setting barbell weight. assuming kilograms`,
+        `weight_type '${weight_type}' does not exist for barbell. assuming kilograms`,
       )
     }
 
-    this.#weight = input_weight
+    if (weight_type === WeightType.lbs) {
+      this.#weight = weight / this.#multiplier
+    } else {
+      this.#weight = weight
+    }
   }
 
   get_attached_plates(): Array<Plate> {
@@ -40,13 +40,6 @@ class Barbell {
   }
 
   add_plate(weight: number, weight_type: WeightType = WeightType.kgs): void {
-    // if weight type doesn't exist
-    if (!Object.values(WeightType).includes(weight_type)) {
-      console.warn(
-        `weight_type '${weight_type}' does not exist for adding plate. assuming kilograms`,
-      )
-      weight_type = WeightType.kgs
-    }
     const added_plate: Plate = new Plate(weight, weight_type)
     this.#attached_plates.push(added_plate)
   }

@@ -1,27 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Barbell Class Getting/Setting Attached Plates add_plate function should log a warning and assume weight type of kilograms if weight type does not exist 1`] = `
-Array [
-  Array [
-    "weight_type 'fake weight type' does not exist for adding plate. assuming kilograms",
-  ],
-]
-`;
-
-exports[`Barbell Class Getting/Setting Attached Plates add_plate function should throw an error if number does not exist for kilogram plates 1`] = `"plate number '11' does not exist for 'kilograms'"`;
-
-exports[`Barbell Class Getting/Setting Attached Plates add_plate function should throw an error if number does not exist for pound plates 1`] = `"plate number '11' does not exist for 'pounds'"`;
-
 exports[`Barbell Class Getting/Setting Barbell Weight should log a warning and assume barbell weight type is kilograms if weight type does not exist 1`] = `
 Array [
   Array [
-    "weight_type 'fake weight type' does not exist for setting barbell weight. assuming kilograms",
+    "weight_type 'fake weight type' does not exist for barbell. assuming kilograms",
   ],
   Array [
-    "weight_type 'fake weight type' does not exist for setting barbell weight. assuming kilograms",
+    "weight_type 'fake weight type' does not exist for barbell. assuming kilograms",
   ],
   Array [
-    "weight_type 'fake weight type' does not exist for setting barbell weight. assuming kilograms",
+    "weight_type 'fake weight type' does not exist for barbell. assuming kilograms",
   ],
 ]
 `;
@@ -29,7 +17,7 @@ Array [
 exports[`Barbell Class Getting/Setting Barbell Weight should log a warning and set assume weight type of kilograms if specified weight type doesn not exist 1`] = `
 Array [
   Array [
-    "weight_type 'fake weight type' does not exist for setting barbell weight. assuming kilograms",
+    "weight_type 'fake weight type' does not exist for barbell. assuming kilograms",
   ],
 ]
 `;

@@ -26,15 +26,22 @@ const plate_images: { [key in WeightType]: { [key: number]: string } } = {
 class Plate {
   weight: number
   weight_type: WeightType
-  plate_image: string
+  image: string
 
   constructor(weight: number, weight_type: WeightType) {
+    if (weight < 0) {
+      throw new Error('plate weight can not be negative')
+    }
+
+    if (!Object.values(WeightType).includes(weight_type)) {
+      console.warn(
+        `weight_type '${weight_type}' does not exist for plate. assuming kilograms`,
+      )
+      weight_type = WeightType.kgs
+    }
+
     this.weight = weight
     this.weight_type = weight_type
-
-    if (!plate_images[weight_type]) {
-      throw new Error(`plate type '${weight_type}' does not exist`)
-    }
 
     if (!plate_images[weight_type][weight]) {
       throw new Error(
@@ -42,8 +49,8 @@ class Plate {
       )
     }
 
-    this.plate_image = plate_images[weight_type][weight]
+    this.image = plate_images[weight_type][weight]
   }
 }
 
-export { Plate, plate_images }
+export { Plate }
