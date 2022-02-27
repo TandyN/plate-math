@@ -23,7 +23,8 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noImplicitReturns": true
   },
   "exclude": [
     "node_modules",
