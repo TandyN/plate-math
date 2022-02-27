@@ -88,94 +88,106 @@ describe('Barbell Class', () => {
     })
   })
 
-  describe('add_kilogram_plate function', () => {
-    it('should add to attached_plates if weight number exists as a kilogram plate', () => {
-      const barbell = new Barbell()
-      barbell.add_kilogram_plate(10)
+  describe('Getting/Setting Attached Plates', () => {
+    describe('add_plate function', () => {
+      it('should add to attached_plates if weight number exists as a kilogram plate', () => {
+        const barbell = new Barbell()
+        barbell.add_plate(10, WeightType.kgs)
 
-      expect(barbell.get_attached_plates().length).toBe(1)
-      expect(barbell.get_attached_plates()[0].weight).toBe(10)
-      expect(barbell.get_attached_plates()[0].weight_type).toBe('kilograms')
+        expect(barbell.get_attached_plates().length).toBe(1)
+        expect(barbell.get_attached_plates()[0].weight).toBe(10)
+        expect(barbell.get_attached_plates()[0].weight_type).toBe('kilograms')
 
-      barbell.add_kilogram_plate(15)
-      expect(barbell.get_attached_plates().length).toBe(2)
-      expect(barbell.get_attached_plates()[1].weight).toBe(15)
-      expect(barbell.get_attached_plates()[1].weight_type).toBe('kilograms')
+        barbell.add_plate(15, WeightType.kgs)
+        expect(barbell.get_attached_plates().length).toBe(2)
+        expect(barbell.get_attached_plates()[1].weight).toBe(15)
+        expect(barbell.get_attached_plates()[1].weight_type).toBe('kilograms')
+      })
+
+      it('should throw an error if number does not exist for kilogram plates', () => {
+        const barbell = new Barbell()
+        expect(() => {
+          barbell.add_plate(11, WeightType.kgs)
+        }).toThrowErrorMatchingSnapshot()
+      })
+
+      it('should add to attached_plates if weight number exists as a pound plate', () => {
+        const barbell = new Barbell()
+
+        barbell.add_plate(10, WeightType.lbs)
+        expect(barbell.get_attached_plates().length).toBe(1)
+        expect(barbell.get_attached_plates()[0].weight).toBe(10)
+        expect(barbell.get_attached_plates()[0].weight_type).toBe('pounds')
+
+        barbell.add_plate(25, WeightType.lbs)
+        expect(barbell.get_attached_plates().length).toBe(2)
+        expect(barbell.get_attached_plates()[1].weight).toBe(25)
+        expect(barbell.get_attached_plates()[1].weight_type).toBe('pounds')
+      })
+
+      it('should throw an error if number does not exist for pound plates', () => {
+        const barbell = new Barbell()
+        expect(() => {
+          barbell.add_plate(11, WeightType.lbs)
+        }).toThrowErrorMatchingSnapshot()
+      })
+
+      it('should log a warning and assume weight type of kilograms if weight type does not exist', () => {
+        const console_warn_spy = jest.spyOn(console, 'warn')
+
+        const barbell = new Barbell()
+        barbell.add_plate(15, 'fake weight type' as never)
+        expect(barbell.get_attached_plates().length).toBe(1)
+        expect(barbell.get_attached_plates()[0].weight).toBe(15)
+        expect(barbell.get_attached_plates()[0].weight_type).toBe('kilograms')
+
+        expect(console_warn_spy.mock.calls).toMatchSnapshot()
+      })
     })
 
-    it('should throw an error if number does not exist', () => {
-      const barbell = new Barbell()
-      expect(() => {
-        barbell.add_kilogram_plate(11)
-      }).toThrowErrorMatchingSnapshot()
-    })
-  })
+    describe('remove_last_plate function', () => {
+      it('should remove plate from attached_weights', () => {
+        const barbell = new Barbell()
 
-  describe('add_pound_plate function', () => {
-    it('should add to attached_plates if weight number exists as a pound plate', () => {
-      const barbell = new Barbell()
+        barbell.add_plate(10, WeightType.lbs)
+        barbell.add_plate(5, WeightType.lbs)
+        expect(barbell.get_attached_plates().length).toBe(2)
 
-      barbell.add_pound_plate(10)
-      expect(barbell.get_attached_plates().length).toBe(1)
-      expect(barbell.get_attached_plates()[0].weight).toBe(10)
-      expect(barbell.get_attached_plates()[0].weight_type).toBe('pounds')
+        const first_removed_plate = barbell.remove_last_plate()
+        expect(first_removed_plate?.weight).toBe(5)
+        expect(barbell.get_attached_plates().length).toBe(1)
 
-      barbell.add_pound_plate(25)
-      expect(barbell.get_attached_plates().length).toBe(2)
-      expect(barbell.get_attached_plates()[1].weight).toBe(25)
-      expect(barbell.get_attached_plates()[1].weight_type).toBe('pounds')
-    })
+        const second_removed_plate = barbell.remove_last_plate()
+        expect(second_removed_plate?.weight).toBe(10)
+        expect(barbell.get_attached_plates().length).toBe(0)
+      })
 
-    it('should throw an error if number does not exist', () => {
-      const barbell = new Barbell()
-      expect(() => {
-        barbell.add_pound_plate(11)
-      }).toThrowErrorMatchingSnapshot()
-    })
-  })
+      it('should return undefined if there are no plates to remove', () => {
+        const barbell = new Barbell()
+        expect(barbell.get_attached_plates().length).toBe(0)
 
-  describe('remove_last_plate function', () => {
-    it('should remove plate from attached_weights', () => {
-      const barbell = new Barbell()
-
-      barbell.add_pound_plate(10)
-      barbell.add_pound_plate(5)
-      expect(barbell.get_attached_plates().length).toBe(2)
-
-      const first_removed_plate = barbell.remove_last_plate()
-      expect(first_removed_plate?.weight).toBe(5)
-      expect(barbell.get_attached_plates().length).toBe(1)
-
-      const second_removed_plate = barbell.remove_last_plate()
-      expect(second_removed_plate?.weight).toBe(10)
-      expect(barbell.get_attached_plates().length).toBe(0)
+        const removed_plate = barbell.remove_last_plate()
+        expect(removed_plate).toBeUndefined()
+        expect(barbell.get_attached_plates().length).toBe(0)
+      })
     })
 
-    it('should return undefined if there are no plates to remove', () => {
-      const barbell = new Barbell()
-      expect(barbell.get_attached_plates().length).toBe(0)
+    describe('remove_all_plates function', () => {
+      it('should remove all plates from attached_weights', () => {
+        const barbell = new Barbell()
 
-      const removed_plate = barbell.remove_last_plate()
-      expect(removed_plate).toBeUndefined()
-      expect(barbell.get_attached_plates().length).toBe(0)
-    })
-  })
+        barbell.add_plate(10, WeightType.lbs)
+        barbell.add_plate(10, WeightType.lbs)
+        expect(barbell.get_attached_plates().length).toBe(2)
 
-  describe('remove_all_plates function', () => {
-    it('should remove all plates from attached_weights', () => {
-      const barbell = new Barbell()
+        let removed_plates = barbell.remove_all_plates()
+        expect(removed_plates.length).toBe(2)
+        expect(barbell.get_attached_plates().length).toBe(0)
 
-      barbell.add_pound_plate(10)
-      barbell.add_pound_plate(10)
-      expect(barbell.get_attached_plates().length).toBe(2)
-
-      let removed_plates = barbell.remove_all_plates()
-      expect(removed_plates.length).toBe(2)
-      expect(barbell.get_attached_plates().length).toBe(0)
-
-      removed_plates = barbell.remove_all_plates()
-      expect(removed_plates.length).toBe(0)
-      expect(barbell.get_attached_plates().length).toBe(0)
+        removed_plates = barbell.remove_all_plates()
+        expect(removed_plates.length).toBe(0)
+        expect(barbell.get_attached_plates().length).toBe(0)
+      })
     })
   })
 
@@ -186,11 +198,11 @@ describe('Barbell Class', () => {
       // just the bar
       expect(barbell.get_total_weight(WeightType.lbs)).toBe(20 * multiplier)
 
-      barbell.add_kilogram_plate(10)
-      barbell.add_pound_plate(10)
-      barbell.add_kilogram_plate(10)
-      barbell.add_pound_plate(10)
-      barbell.add_kilogram_plate(5)
+      barbell.add_plate(10, WeightType.kgs)
+      barbell.add_plate(10, WeightType.lbs)
+      barbell.add_plate(10, WeightType.kgs)
+      barbell.add_plate(10, WeightType.lbs)
+      barbell.add_plate(5, WeightType.kgs)
 
       const actual =
         Math.round(barbell.get_total_weight(WeightType.lbs) * 100) / 100
@@ -207,11 +219,11 @@ describe('Barbell Class', () => {
       // just the bar
       expect(barbell.get_total_weight(WeightType.kgs)).toBe(20)
 
-      barbell.add_pound_plate(10)
-      barbell.add_kilogram_plate(10)
-      barbell.add_pound_plate(10)
-      barbell.add_kilogram_plate(10)
-      barbell.add_pound_plate(5)
+      barbell.add_plate(10, WeightType.lbs)
+      barbell.add_plate(10, WeightType.kgs)
+      barbell.add_plate(10, WeightType.lbs)
+      barbell.add_plate(10, WeightType.kgs)
+      barbell.add_plate(5, WeightType.lbs)
 
       const actual =
         Math.round(barbell.get_total_weight(WeightType.kgs) * 100) / 100
@@ -235,7 +247,7 @@ describe('Barbell Class', () => {
     it('should fill the attached_weights as close to specified weight as possible with lb plates', () => {
       const barbell = new Barbell(45, WeightType.lbs)
 
-      barbell.add_pound_plate(45)
+      barbell.add_plate(45, WeightType.lbs)
 
       const attached_weights = barbell.fill_to_target(
         318,
@@ -259,7 +271,7 @@ describe('Barbell Class', () => {
     it('should fill the attached_weights as close to specified weight as possible with kg plates', () => {
       const barbell = new Barbell()
 
-      barbell.add_kilogram_plate(25)
+      barbell.add_plate(25, WeightType.kgs)
 
       const attached_weights = barbell.fill_to_target(
         170.6,
@@ -283,7 +295,7 @@ describe('Barbell Class', () => {
     it('should fill the attached_weights as close to specified weight as possible with kg plates given the target weight in lbs', () => {
       const barbell = new Barbell()
 
-      barbell.add_kilogram_plate(25)
+      barbell.add_plate(25, WeightType.kgs)
 
       const attached_weights = barbell.fill_to_target(
         376.1,
@@ -307,7 +319,7 @@ describe('Barbell Class', () => {
     it('should fill the attached_weights as close to specified weight as possible with lb plates given the target weight in kgs', () => {
       const barbell = new Barbell(45, WeightType.lbs)
 
-      barbell.add_pound_plate(45)
+      barbell.add_plate(45, WeightType.lbs)
 
       const attached_weights = barbell.fill_to_target(
         144.2,
