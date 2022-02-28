@@ -38,19 +38,17 @@ class Barbell {
   }
 
   add_plate(weight: number, weight_type: WeightType): void {
-    const added_plate: Plate = new Plate(weight, weight_type)
-    this.#attached_plates.push(added_plate)
+    this.#attached_plates.push(new Plate(weight, weight_type))
   }
 
   remove_last_plate(): Plate | undefined {
-    const removed_plate: Plate | undefined = this.#attached_plates.pop()
-    return removed_plate
+    return this.#attached_plates.pop()
   }
 
   remove_all_plates(): Array<Plate> {
-    const current_attached_plates: Array<Plate> = this.#attached_plates
+    const removed_plates: Array<Plate> = this.#attached_plates
     this.#attached_plates = []
-    return current_attached_plates
+    return removed_plates
   }
 
   get_total_weight(weight_type: WeightType): number {
@@ -87,9 +85,9 @@ class Barbell {
   }
 
   fill_to_target(
-    target_weight: number, // What they want the weight to be
-    target_weight_type: WeightType, // The weight type they specify
-    target_plate_type: WeightType, // The plate type they want to put on
+    target_weight: number, // what they want the weight to be
+    target_weight_type: WeightType, // the weight type for the target weight
+    target_plate_type: WeightType, // the plate type they want to put on to fill to the target weight
   ): Array<Plate> {
     if (!Object.values(WeightType).includes(target_weight_type)) {
       throw new Error(
@@ -101,12 +99,12 @@ class Barbell {
       )
     }
 
-    let use_plate_type: Array<[number, number]>
+    let used_plate_map: Array<[number, number]> // [ plate type number for mapping, weight for calculation ]
     let current_weight: number
 
     if (target_plate_type === WeightType.lbs) {
-      use_plate_type = [
-        [45, 45], // [Used for Plate Object, Used for calculation]
+      used_plate_map = [
+        [45, 45],
         [35, 35],
         [25, 25],
         [10, 10],
@@ -115,7 +113,7 @@ class Barbell {
         [1.25, 1.25],
       ]
     } else {
-      use_plate_type = [
+      used_plate_map = [
         [25, 25],
         [20, 20],
         [15, 15],
@@ -131,7 +129,8 @@ class Barbell {
     if (target_weight_type === WeightType.lbs) {
       current_weight = this.get_total_weight(WeightType.lbs)
       if (target_weight_type !== target_plate_type) {
-        use_plate_type = use_plate_type.map((plate_weight) => [
+        // convert second index for calculating purposes
+        used_plate_map = used_plate_map.map((plate_weight) => [
           plate_weight[0],
           plate_weight[0] * this.#multiplier,
         ])
@@ -139,33 +138,34 @@ class Barbell {
     } else {
       current_weight = this.get_total_weight(WeightType.kgs)
       if (target_weight_type !== target_plate_type) {
-        use_plate_type = use_plate_type.map((plate_weight) => [
+        used_plate_map = used_plate_map.map((plate_weight) => [
           plate_weight[0],
           plate_weight[0] / this.#multiplier,
         ])
       }
     }
 
-    const target_attached_weights: Array<Plate> = []
+    const plates_attached: Array<Plate> = []
     let plate_index = 0
 
-    while (plate_index < use_plate_type.length) {
-      const added_weight = current_weight + use_plate_type[plate_index][1] * 2
+    // fill bar with plates until right before target
+    while (plate_index < used_plate_map.length) {
+      const added_weight = current_weight + used_plate_map[plate_index][1] * 2
 
       if (added_weight <= target_weight) {
         current_weight = added_weight
-        target_attached_weights.push(
-          new Plate(use_plate_type[plate_index][0], target_plate_type),
+        plates_attached.push(
+          new Plate(used_plate_map[plate_index][0], target_plate_type),
         )
         this.#attached_plates.push(
-          new Plate(use_plate_type[plate_index][0], target_plate_type),
+          new Plate(used_plate_map[plate_index][0], target_plate_type),
         )
       } else {
         plate_index++
       }
     }
 
-    return target_attached_weights
+    return plates_attached
   }
 }
 
